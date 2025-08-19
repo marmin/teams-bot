@@ -8,6 +8,8 @@ from botbuilder.schema import Activity
 from botframework.connector.auth import ClaimsIdentity
 from .llm_hf import HFLLM
 import asyncio
+from urllib.parse import urlsplit, urlunsplit
+
 
 from .storage import upsert_conversation_reference, conversation_refs
 from .scheduler import start_scheduler, schedule_in_minutes
@@ -88,11 +90,30 @@ ADAPTER.on_turn_error = on_error
 
 routes = web.RouteTableDef()
 
+def _rewrite_service_url(url: str) -> str:
+    """If the serviceUrl uses localhost, point it to the host so the container can reach it."""
+    try:
+        u = urlsplit(url)
+        if u.hostname in ("localhost", "127.0.0.1"):
+            host_override = os.getenv("PLAYGROUND_HOST", "host.docker.internal")
+            netloc = f"{host_override}:{u.port}" if u.port else host_override
+            return urlunsplit((u.scheme, netloc, u.path, u.query, u.fragment))
+    except Exception:
+        pass
+    return url
+
 @routes.post("/api/messages")
 async def messages(req: web.Request):
     if "application/json" not in req.headers.get("Content-Type", ""):
         return web.Response(status=415)
     body = await req.json()
+
+    su = body.get("serviceUrl")
+    new_su = _rewrite_service_url(su) if su else su
+    if new_su and new_su != su:
+        print(f"[NET] Rewriting serviceUrl {su} -> {new_su}")
+        body["serviceUrl"] = new_su
+
 
     print("INBOUND channel:", body.get("channelId"), "| type:", body.get("type"), "| text:", body.get("text"))
 
