@@ -1,0 +1,38 @@
+debug Telemetry: agents-playground-cli/cliStart {"cleanProperties":{"isExec":"true","argv":"<REDACTED: user-file-path>/bin/node,/opt/homebrew/bin/teamsapptester,start"}}
+
+log Listening on 56150
+log Microsoft 365 Agents Playground is being launched for you to debug the app: http://localhost:56150
+debug started web socket client
+debug started web socket client
+log Waiting for connection of endpoint: http://localhost:3978/api/messages
+log waiting for 1 resources: http://localhost:3978/api/messages
+log wait-on(55159) complete
+log Events recording disabled.
+debug Telemetry: agents-playground-server/eventsRecording {"cleanProperties":{"enabled":"false"}}
+
+debug Telemetry: agents-playground-server/getConfig {"cleanProperties":{"internalConfig":"{\"locale\":\"en-US\",\"localTimezone\":\"Europe/Zurich\",\"channelId\":\"msteams\",\"debugConfig\":{\"eventsRecordingEnabled\":false}}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"installationUpdate","conversationId":"90459a3f-4aaf-42a2-952e-5c9a121b794f","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"conversationUpdate","conversationId":"90459a3f-4aaf-42a2-952e-5c9a121b794f","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"message","conversationId":"90459a3f-4aaf-42a2-952e-5c9a121b794f","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"installationUpdate","conversationId":"b2f1e441-1d09-425d-b4ab-977138323990","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"conversationUpdate","conversationId":"b2f1e441-1d09-425d-b4ab-977138323990","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"installationUpdate","conversationId":"team-id","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"conversationUpdate","conversationId":"team-id","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"message","conversationId":"90459a3f-4aaf-42a2-952e-5c9a121b794f","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug Telemetry: agents-playground-server/sendActivity {"cleanProperties":{"activityType":"message","conversationId":"90459a3f-4aaf-42a2-952e-5c9a121b794f","headers":"{\"x-ms-agents-playground\":\"true\"}"}}
+
+debug stopping web socket client
+debug stopping web socket client
+debug Telemetry: agents-playground-server/error {"cleanProperties":{"stack":"\"Error: No websocket connection\\n    at 23683 (<REDACTED: user-file-path>:2:1229875)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at 91964 (<REDACTED: user-file-path>:5:1288473)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at 40862 (<REDACTED: user-file-path>:2:1752481)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at 87783 (<REDACTED: user-file-path>:5:1047212)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at <REDACTED: user-file-path>:8:3986\\n    at <REDACTED: user-file-path>:8:4036\"","message":"\"No websocket connection\"","code":"\"NoWebSocketConnection\""}}
+
+debug Telemetry: agents-playground-server/error {"cleanProperties":{"stack":"\"Error: No websocket connection\\n    at 23683 (<REDACTED: user-file-path>:2:1229875)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at 91964 (<REDACTED: user-file-path>:5:1288473)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at 40862 (<REDACTED: user-file-path>:2:1752481)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at 87783 (<REDACTED: user-file-path>:5:1047212)\\n    at __webpack_require__ (<REDACTED: user-file-path>:8:3085)\\n    at <REDACTED: user-file-path>:8:3986\\n    at <REDACTED: user-file-path>:8:4036\"","message":"\"No websocket connection\"","code":"\"NoWebSocketConnection\""}}
+
