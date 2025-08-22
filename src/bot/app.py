@@ -5,7 +5,7 @@ from aiohttp import web
 from botbuilder.core import TurnContext, ActivityHandler, MessageFactory
 from botbuilder.core import BotFrameworkAdapterSettings, BotFrameworkAdapter
 from botbuilder.schema import Activity
-from botframework.connector.auth import ClaimsIdentity
+#from botframework.connector.auth import ClaimsIdentity
 from .llm_hf import HFLLM
 import asyncio
 from urllib.parse import urlsplit, urlunsplit
@@ -15,10 +15,20 @@ from .storage import upsert_conversation_reference, conversation_refs
 from .scheduler import start_scheduler, schedule_in_minutes
 
 
+# trust serviceUrl for proactive messages
+try:
+    from botframework.connector.auth import MicrosoftAppCredentials
+except Exception:
+    from botframework.connector.auth.microsoft_app_credentials import MicrosoftAppCredentials
+
+from botframework.connector.auth import ClaimsIdentity
+
 logging.basicConfig(level=logging.INFO)
 
 APP_ID = os.getenv("MicrosoftAppId", "")
 APP_PASSWORD = os.getenv("MicrosoftAppPassword", "")
+TENANT_ID = os.getenv("MicrosoftAppTenantId", "")
+
 PORT = int(os.getenv("PORT", "3978"))
 
 class ChatBot(ActivityHandler):
@@ -58,15 +68,32 @@ class ChatBot(ActivityHandler):
                 print(f"[REM] firing user_id={user_id}, have_ref={bool(ref)}")
                 if not ref: 
                     return
+                
+                try:
+                    MicrosoftAppCredentials.trust_service_url(ref.service_url)
+                    print(f"[REM] trusted serviceUrl: {ref.service_url}")
+                except Exception as e:
+                    print("[REM] trust_service_url ERROR:", e)
+
+
                 async def logic(ctx: TurnContext):
                     await ctx.send_activity(f"Reminder: {message}")
 
                 try:
-                    anon = ClaimsIdentity({}, "anonymous")
-                    await ADAPTER.continue_conversation(ref, logic, claims_identity=anon)
+                    # trust the service URL once
+                    MicrosoftAppCredentials.trust_service_url(ref.service_url)
+                    print(f"[REM] trusted serviceUrl: {ref.service_url}")
+
+                    if APP_ID:  # real Teams (container started with App ID/secret)
+                        await ADAPTER.continue_conversation(ref, logic, bot_id=APP_ID)
+                    else:       # Playground/Emulator (no creds)
+                        anon = ClaimsIdentity({}, "anonymous")
+                        await ADAPTER.continue_conversation(ref, logic, claims_identity=anon)
+
                     print("[REM] continue_conversation OK")
                 except Exception as e:
-                    print("[REM] continue_conversation ERROR:", e)
+                        print("[REM] continue_conversation ERROR:", e)
+
 
             schedule_in_minutes(n, _send_reminder, user_id, msg)
             return await turn_context.send_activity(f"Okay! I'll remind you in {n} minute(s).")
@@ -79,7 +106,13 @@ class ChatBot(ActivityHandler):
         reply = await self.llm.generate(text)
         await turn_context.send_activity(MessageFactory.text(reply))
 
-SETTINGS = BotFrameworkAdapterSettings(APP_ID, APP_PASSWORD)
+from botbuilder.core import BotFrameworkAdapterSettings
+SETTINGS = BotFrameworkAdapterSettings(
+    APP_ID,
+    APP_PASSWORD,
+    channel_auth_tenant=TENANT_ID,  # force single-tenant auth
+)
+
 ADAPTER = BotFrameworkAdapter(SETTINGS)
 BOT = ChatBot()
 
@@ -101,6 +134,26 @@ def _rewrite_service_url(url: str) -> str:
     except Exception:
         pass
     return url
+
+
+@routes.options("/api/messages")
+async def messages_options(request: web.Request):
+    # Allow preflight / probes
+    return web.Response(
+        status=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type",
+        },
+    )
+
+@routes.head("/api/messages")
+async def messages_head(request: web.Request):
+    # Health/HEAD probe
+    return web.Response(status=200)
+
+
 
 @routes.post("/api/messages")
 async def messages(req: web.Request):
