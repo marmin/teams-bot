@@ -62,7 +62,7 @@ docker run --rm -p 3978:3978 --name teams-bot \
   -e MicrosoftAppPassword="<APP_SECRET>" \
   -e MicrosoftAppTenantId="<TENANT_ID>" \
   -e HUGGINGFACE_API_TOKEN="$HUGGINGFACE_API_TOKEN" \
-  -e HF_MODEL="HuggingFaceH4/zephyr-7b-beta" \
+  -e HF_MODEL="Qwen/Qwen2.5-7B-Instruct-1M" \
   teams-bot:local
 ```
 ### 5.2 Expose locally via ngrok
@@ -70,8 +70,7 @@ docker run --rm -p 3978:3978 --name teams-bot \
 ngrok http 3978
 ```
 ### 5.3 Azure Bot configuration (Azure Portal)
-1. Create an **Azure Bot** in Azure portal 
-2. Go to your **Azure Bot (Bot Channels Registration)** resource.  
+1. Go to your **Azure Bot (Bot Channels Registration)** resource.  
 2. **Configuration** → set **Messaging endpoint** to your current ngrok URL **including** the path:
 https://<your-ngrok>.ngrok-free.app/api/messages
 
