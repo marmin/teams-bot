@@ -118,3 +118,8 @@ https://<your-ngrok>.ngrok-free.app/api/messages
 │       ├── Teams_bot_screenshot.png
 
 ```
+
+## Messagingn flow diagram
+![messaging flow](docs/screenshots/chart.png)
+
+*Sequence diagram showing the echo, llm conversation and reminder functionality message flow.*
