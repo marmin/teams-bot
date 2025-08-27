@@ -45,6 +45,11 @@ npx -y -p @microsoft/teams-app-test-tool \
   teamsapptester start --app-endpoint http://localhost:3978/api/messages
 ```
 
+Or you can use the newer version
+```bash
+agentsplayground -e "http://localhost:3978/api/messages" -c "emulator"
+```
+
 ![Playground — chatbot output](docs/screenshots/playground_test_screenshot.png)
 
 *Playground showing the echo, llm conversation and reminder functionality.*
