@@ -1,29 +1,27 @@
 import asyncio
-from datetime import datetime, timedelta, timezone
+import logging
+from datetime import datetime, timedelta
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
-from tzlocal import get_localzone
-
-#LOCAL_TZ = get_localzone()
-#scheduler = AsyncIOScheduler(timezone=LOCAL_TZ)
 
 _scheduler = None
 _loop = None  # the aiohttp loop we capture at startup
 
 
 def start_scheduler(loop: asyncio.AbstractEventLoop):
-
+    """
+    Start the APScheduler bound to the given event loop.
+    """
     global _scheduler, _loop
     _loop = loop
 
     if _scheduler is None:
         _scheduler = AsyncIOScheduler(event_loop=loop)  # bind to this loop
         _scheduler.start()
-        print(f"[SCHED] started (loop id={id(loop)})")
+        logging.info(f"[SCHED] started (loop id={id(loop)})")
 
 def schedule_in_minutes(n_minutes, coro_func, *args, **kwargs):
     run_time = datetime.now() + timedelta(minutes=n_minutes)
-    print(f"[SCHED] job scheduled for {run_time.isoformat()} (in {n_minutes} min)")
+    logging.info(f"[SCHED] job scheduled for {run_time.isoformat()} (in {n_minutes} min)")
 
     def _job_wrapper():
         # Ensure the coroutine runs on the aiohttp loop even if APScheduler calls from another thread
