@@ -73,19 +73,13 @@ class ChatBot(ActivityHandler):
                 if not ref: 
                     return
                 
-                try:
-                    MicrosoftAppCredentials.trust_service_url(ref.service_url)
-                except Exception as e:
-                    logging.error("[REM] trust_service_url ERROR: %s", e)
-
                 async def logic(ctx: TurnContext):
                     await ctx.send_activity(f"Reminder: {message}")
-
+                
                 try:
-                    # trust the service URL once
                     MicrosoftAppCredentials.trust_service_url(ref.service_url)
                     logging.info(f"[REM] trusted serviceUrl: {ref.service_url}")
-
+                
                     if APP_ID:  # real Teams (container started with App ID/secret)
                         await ADAPTER.continue_conversation(ref, logic, bot_id=APP_ID)
                     else:       # Playground/Emulator (no creds)
